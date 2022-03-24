@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  api:
+    image: api
+    container_name: "api"
+    init: true
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/code:rw
+    command: /bin/sh -c "uvicorn app.main:app --proxy-headers --host 0.0.0.0 --port 8001 --reload"
+
+  nginx:
+    image: nginx
+    container_name: "nginx"
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/logs:/var/log/nginx:rw
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./pages:/usr/share/nginx/html:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>雀POINT</title>
+    <style>
+        @font-face {
+            font-family: "GL-Antique";
+            src: url("GL-Antique.otf");
+        }
+
+        #bingpai {
+            width: 240px
+        }
+
+        .dora-input {
+            width: 40px
+        }
+
+        .fulou-input {
+            width: 80px
+        }
+
+        .laid {
+            display: inline-block;
+            transform: rotate(-90deg);
+            vertical-align: -12%;
+            padding: 0px 10px 0px 10px;
+        }
+
+        .fulou-division {
+            padding: 0px 15px 0px 0px;
+        }
+
+        .bingpai-division {
+            padding: 0px 0px 0px 0px;
+        }
+
+        .wintile-division {
+            padding: 0px 20px 0px 20px;
+        }
+
+        .error_text {
+            color: red
+        }
+
+        #img-hand-tiles {
+            line-height: 1;
+            background-color: #5ec05e;
+        }
+
+        .pai-font {
+            font-family: "GL-Antique";
+            color: #292929;
+            font-size: 20mm;
+            margin-right: -6mm;
+        }
+
+        .aka-pai-font {
+            font-family: "GL-Antique";
+            color: red;
+            font-size: 20mm;
+            margin-right: -6mm;
+
+        }
+
+        .form-group {
+            padding: 5px 0px 5px 0px;
+        }
+
+        table,
+        td {
+            border: 1px solid #333;
+        }
+    </style>
+    <script src="./js/home.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <h1>雀POINT</h1>
+    麻雀の得点を画像から計算します。<br />
+    学習に用いた牌は「大洋技研　AMOS　モンスター」のみのため、これ以外ではほとんど認識できないかもしれません。<br />
+    送信した画像はサーバーに保存され、認識のために必要な処理や今後の精度向上のための学習に用いられます。<br />
+    保存されたくない場合は送信しないでください。<br />
+
+    <h2>使い方</h2>
+    画面内に上がり牌だけ映るようにして写真を撮ります。<br />
+    手牌と副露牌に多少の間隔を開けてください。また、手牌の一番右に上がり牌を置いてください。<br />
+    <hr />
+    <div id="root"></div>
+    <form id="send-img-form">
+        <div class="form-group">
+            <label for="tile">上がったときの画像を選択:</label>
+            <input type="file" id="tile" name="tile" accept=".png, .jpg, .jpeg">
+            <input type="submit" value="画像を送信">
+            <span id="display-process"></span>
+        </div>
+    </form>
+    <div id="img-hand-tiles"></div>
+    <div id="display-error-bingpai" class="error_text"></div>
+
+    <form id="tiles-and-situ-form">
+        <div class="form-group">
+            <!-- 手牌 -->
+            <label for="bingpai">手牌を入力（最も右にあるものが上がり牌）:</label>
+            <input type="text" id="bingpai" name="bingpai" value="1m9m1p9p1s9s1z2z3z4z5z6z7z1m">
+
+        </div>
+
+        <div class="form-group">
+            <!-- 副露牌 -->
+            <label for="fulou">鳴いた面子を入力:</label>
+
+            <div>
+                <div>
+                    <input type="text" class="fulou-input" name="fulou0" id="fulou0" value="">
+                    <select name="fulou0type" class="fulou-type-input" id="fulou0type">
+                        <option value="none" selected>なし</option>
+                        <option value="pon">ポン</option>
+                        <option value="chi">チー</option>
+                        <option value="ankan">アンカン</option>
+                        <option value="minkan">ミンカン</option>
+                    </select>
+                    <div id="display-error-fulou0" class="error_text"></div>
+                </div>
+                <div>
+                    <input type="text" class="fulou-input" name="fulou1" id="fulou1" value="">
+                    <select name="fulou1type" class="fulou-type-input" id="fulou1type">
+                        <option value="none" selected>なし</option>
+                        <option value="pon">ポン</option>
+                        <option value="chi">チー</option>
+                        <option value="ankan">アンカン</option>
+                        <option value="minkan">ミンカン</option>
+                    </select>
+                    <div id="display-error-fulou1" class="error_text"></div>
+                </div>
+                <div>
+                    <input type="text" class="fulou-input" name="fulou2" id="fulou2" value="">
+                    <select name="fulou2type" class="fulou-type-input" id="fulou2type">
+                        <option value="none" selected>なし</option>
+                        <option value="pon">ポン</option>
+                        <option value="chi">チー</option>
+                        <option value="ankan">アンカン</option>
+                        <option value="minkan">ミンカン</option>
+                    </select>
+                    <div id="display-error-fulou2" class="error_text"></div>
+                </div>
+                <div>
+                    <input type="text" class="fulou-input" name="fulou3" id="fulou3" value="">
+                    <select name="fulou3type" class="fulou-type-input" id="fulou3type">
+                        <option value="none" selected>なし</option>
+                        <option value="pon">ポン</option>
+                        <option value="chi">チー</option>
+                        <option value="ankan">アンカン</option>
+                        <option value="minkan">ミンカン</option>
+                    </select>
+                    <div id="display-error-fulou3" class="error_text"></div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <!-- ドラ表示牌 -->
+            <label for="fulou">ドラ表示牌を入力:</label>
+
+            <div>
+                <input type="text" class="dora-input" name="dora0" value="">
+                <input type="text" class="dora-input" name="dora1" value="">
+                <input type="text" class="dora-input" name="dora2" value="">
+                <input type="text" class="dora-input" name="dora3" value="">
+                <input type="text" class="dora-input" name="dora4" value="">
+                <input type="text" class="dora-input" name="dora5" value="">
+                <input type="text" class="dora-input" name="dora6" value="">
+                <input type="text" class="dora-input" name="dora7" value="">
+                <input type="text" class="dora-input" name="dora8" value="">
+                <input type="text" class="dora-input" name="dora9" value="">
+            </div>
+        </div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>アガリ方</td>
+                    <td>
+                        <div class="form-group">
+                            <!-- ツモロン -->
+                            <label for="tumo">ツモ</label>
+                            <input type="radio" id="tumo" name="agari" value="tumo" checked>
+
+                            <label for="ron">ロン</label>
+                            <input type="radio" id="ron" name="agari" value="ron">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>自風場風</td>
+                    <td>
+                        <div class="form-group">
+                            <!-- 自風場風 -->
+                            <label for="zikaze">自風:</label>
+                            <select name="zikaze">
+                                <option value="0" selected>東</option>
+                                <option value="1">南</option>
+                                <option value="2">西</option>
+                                <option value="3">北</option>
+                            </select>
+                            <label for="bakaze">場風:</label>
+                            <select name="bakaze">
+                                <option value="0" selected>東</option>
+                                <option value="1">南</option>
+                                <option value="2">西</option>
+                                <option value="3">北</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>リーチ</td>
+                    <td>
+                        <div class="form-group">
+                            <!-- リーチ・ダブリー・一発 -->
+                            <select name="riiti">
+                                <option value="none" selected>なし</option>
+                                <option value="riiti">リーチ</option>
+                                <option value="doubleriiti">ダブルリーチ</option>
+                            </select>
+                            <label for="ippatu">一発</label>
+                            <input type="checkbox" id="ippatu" name="ippatsu">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>アガリ牌</td>
+                    <td>
+                        <div class="form-group">
+                            <!-- 海底・嶺上・槍槓 -->
+                            <select name="krt">
+                                <option value="none" selected>なし</option>
+                                <option value="haitei">海底（ツモ・ロン）</option>
+                                <option value="rinsyan">嶺上開花（ツモ）</option>
+                                <option value="tyankan">槍槓（ロン）</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>天和・地和</td>
+                    <td>
+                        <div class="form-group">
+                            <!-- 天和・地和 -->
+                            <select name="tenhou">
+                                <option value="none" selected>なし</option>
+                                <option value="tenhou">天和</option>
+                                <option value="ti-hou">地和</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="form-group">
+            <!-- 送信 -->
+            <input type="submit" value="送信">
+        </div>
+    </form>
+
+    <hr />
+    <h2>計算結果</h2>
+
+    <div id="results-section" style="display:none">
+        <table id="result-score">
+            <tr>
+                <th>結果</th>
+            </tr>
+
+            <tr>
+                <td colspan="2"><span id="hanfu"></span></td>
+            </tr>
+            <tr>
+                <td><span id="ten"></span></td>
+                <td><span id="ten-distribution"></span></td>
+            </tr>
+        </table>
+
+        <table>
+            <tbody id="result-detail">
+                <tr>
+                    <th>詳細</th>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr />
+    <a href="licenses.html"><h3>ライセンス</h3></a>
+
+</body>
+
+</html>
